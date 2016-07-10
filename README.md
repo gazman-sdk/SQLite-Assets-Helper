@@ -3,6 +3,7 @@ SQLite helper library.
  
  - Load database from file
  - Synchronized access to the database
+ - Using [sqlite-android](https://github.com/requery/sqlite-android) by requery, Android specific distribution of the latest versions of SQLite.
  
 # Usage
 
