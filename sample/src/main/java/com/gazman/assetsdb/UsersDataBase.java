@@ -21,11 +21,11 @@ public class UsersDataBase {
 
     public UsersDataBase(Context context) {
         dataBase = new DataBase.Builder(context, "myDb").
-//                setAssetsPath(). // default "databases"
-//                setDatabaseErrorHandler().
-//                setCursorFactory().
-//                setUpgradeCallback()
-//                setVersion(). // default 1
+//        setAssetsPath(). // default "databases"
+//        setDatabaseErrorHandler().
+//        setCursorFactory().
+//        setUpgradeCallback()
+//        setVersion(). // default 1
         build();
 
     }
@@ -37,7 +37,7 @@ public class UsersDataBase {
                 ArrayList<UserData> list = new ArrayList<>();
 
                 Cursor cursor = db.rawQuery("select * from users", null);
-                if(cursor != null && cursor.moveToFirst()){
+                if (cursor != null && cursor.moveToFirst()) {
                     do {
                         int firstNameIndex = cursor.getColumnIndex("first_name");
                         int lastNameIndex = cursor.getColumnIndex("last_name");
@@ -45,7 +45,7 @@ public class UsersDataBase {
                         userData.firstName = cursor.getString(firstNameIndex);
                         userData.lastName = cursor.getString(lastNameIndex);
                         list.add(userData);
-                    }while (cursor.moveToNext());
+                    } while (cursor.moveToNext());
                 }
                 callback.setResponse(list);
             }
@@ -83,7 +83,7 @@ public class UsersDataBase {
         });
     }
 
-    public void close(){
+    public void close() {
         dataBase.close();
     }
 }
