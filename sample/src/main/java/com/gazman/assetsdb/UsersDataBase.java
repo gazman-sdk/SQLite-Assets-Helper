@@ -34,6 +34,7 @@ public class UsersDataBase {
         dataBase.getReadableDatabase(new DataBaseQueryCallback() {
             @Override
             public void onQuery(SQLiteDatabase db) {
+                // Run on DataBase thread
                 ArrayList<UserData> list = new ArrayList<>();
 
                 Cursor cursor = db.rawQuery("select * from users", null);
@@ -47,6 +48,7 @@ public class UsersDataBase {
                         list.add(userData);
                     } while (cursor.moveToNext());
                 }
+                // response to main thread
                 callback.setResponse(list);
             }
         });
@@ -56,6 +58,7 @@ public class UsersDataBase {
         dataBase.getReadableDatabase(new DataBaseQueryCallback() {
             @Override
             public void onQuery(SQLiteDatabase db) {
+                // Run on DataBase thread
                 Cursor cursor = db.rawQuery("select * from users", null);
                 ArrayList<UserData> users = new CursorList<UserData>(cursor) {
 
@@ -64,12 +67,14 @@ public class UsersDataBase {
 
                     @Override
                     protected void initColumnIndexes(Cursor cursor) {
+                        // Run on DataBase thread
                         firstNameIndex = cursor.getColumnIndex("first_name");
                         lastNameIndex = cursor.getColumnIndex("last_name");
                     }
 
                     @Override
                     protected UserData processRaw(Cursor cursor) {
+                        // Run on DataBase thread
                         UserData userData = new UserData();
                         userData.firstName = cursor.getString(firstNameIndex);
                         userData.lastName = cursor.getString(lastNameIndex);
@@ -77,6 +82,7 @@ public class UsersDataBase {
                     }
                 };
 
+                // response to main thread
                 callback.setResponse(users);
                 cursor.close();
             }

@@ -31,6 +31,7 @@ Write your queries
 ```java
 dataBase.getReadableDatabase(new DataBaseQueryCallback() {
     @Override
+    // Run on DataBase thread
     public void onQuery(SQLiteDatabase db) {
         ArrayList<UserData> list = new ArrayList<>();
 
@@ -49,6 +50,14 @@ dataBase.getReadableDatabase(new DataBaseQueryCallback() {
     }
 });
 ```
+
+callback can be _MainThreadCallback_ to handle the response on main thread or 
+_DBThreadCallback_ to handle the response on database thread.
+
+You can also extend DataBaseDataCallback and provide it with your own handler or executor.
+See the sample module for the full example.
+
+
 
 You can also use the _CursorList_, it extend the _ArrayList_ and add some performance boost,
 It will prevent you from _calling cursor.getColumnIndex("first_name")_ more than once.
