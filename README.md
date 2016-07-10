@@ -57,10 +57,10 @@ _DBThreadCallback_ to handle the response on database thread.
 You can also extend DataBaseDataCallback and provide it with your own handler or executor.
 See the sample module for the full example.
 
-
+_____
 
 You can also use the _CursorList_, it extend the _ArrayList_ and add some performance boost,
-It will prevent you from _calling cursor.getColumnIndex("first_name")_ more than once.
+It will prevent you from _calling cursor.getColumnIndex()_ more than once.
 
 ```Java
 dataBase.getReadableDatabase(new DataBaseQueryCallback() {
@@ -92,8 +92,6 @@ dataBase.getReadableDatabase(new DataBaseQueryCallback() {
     }
 });
 ```
-
-See the sample module for the full example
 
 # License 
 Apache License Version 2.0, January 2004
