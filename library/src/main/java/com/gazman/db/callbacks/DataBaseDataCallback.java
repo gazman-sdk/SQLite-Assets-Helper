@@ -22,7 +22,7 @@ public abstract class DataBaseDataCallback<T> {
         executorService = null;
     }
 
-    public void setResponse(final T responseData) {
+    public void sendResponse(final T responseData) {
         if(executorService != null){
             executorService.execute(new Runnable() {
                 @Override
