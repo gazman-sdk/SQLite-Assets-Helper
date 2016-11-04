@@ -22,7 +22,7 @@ class DataBaseHelper extends SQLiteOpenHelper {
     private String dataBasePath;
     private final String dataBaseName;
     private final Context context;
-    private
+
     @Nullable
     UpgradeCallback callback;
     private String assetsPath;
@@ -116,9 +116,14 @@ class DataBaseHelper extends SQLiteOpenHelper {
     }
 
     @Override
-    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+    public void onUpgrade(final SQLiteDatabase db, final int oldVersion, final int newVersion) {
         if (callback != null) {
-            callback.onUpgrade(db, oldVersion, newVersion);
+            DBThread.EXECUTOR.execute(new Runnable() {
+                @Override
+                public void run() {
+                    callback.onUpgrade(db, oldVersion, newVersion);
+                }
+            });
         }
     }
 
