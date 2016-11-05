@@ -52,6 +52,7 @@ public class DataBase {
         private DatabaseErrorHandler databaseErrorHandler;
         private int version = 1;
         private UpgradeCallback upgradeCallback;
+        private Runnable buildCallback;
 
         /**
          * Creates new database with default assetsPath: "databases"
@@ -63,6 +64,11 @@ public class DataBase {
 
         public Builder setAssetsPath(@NonNull String assetsPath) {
             this.assetsPath = assetsPath;
+            return this;
+        }
+
+        public Builder setBuildCallback(Runnable buildCallback) {
+            this.buildCallback = buildCallback;
             return this;
         }
 
@@ -93,7 +99,8 @@ public class DataBase {
                 public void run() {
                     DataBaseHelper helper = new DataBaseHelper(context, dataBaseName, version, cursorFactory, databaseErrorHandler);
                     helper.setAssetsPath(assetsPath);
-                    helper.setCallback(upgradeCallback);
+                    helper.setUpgradeCallback(upgradeCallback);
+                    helper.setBuildCallback(buildCallback);
                     helper.load();
                     dataBase.init(helper);
                 }

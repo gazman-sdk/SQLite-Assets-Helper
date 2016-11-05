@@ -24,7 +24,8 @@ class DataBaseHelper extends SQLiteOpenHelper {
     private final Context context;
 
     @Nullable
-    UpgradeCallback callback;
+    UpgradeCallback upgradeCallback;
+    Runnable buildCallback;
     private String assetsPath;
 
     DataBaseHelper(Context context, String dataBaseName, int version, SQLiteDatabase.CursorFactory factory, DatabaseErrorHandler error) {
@@ -39,7 +40,15 @@ class DataBaseHelper extends SQLiteOpenHelper {
         boolean isDataBaseExist = new File(dataBasePath + dataBaseName).exists();
         if (!isDataBaseExist) {
             createDataBase();
+            if(buildCallback != null){
+                buildCallback.run();
+            }
         }
+        invokeUpgrade();
+    }
+
+    private void invokeUpgrade() {
+        getReadableDatabase();
     }
 
     public void setAssetsPath(@NonNull String assetsPath) {
@@ -52,8 +61,12 @@ class DataBaseHelper extends SQLiteOpenHelper {
         this.assetsPath = assetsPath;
     }
 
-    public void setCallback(@Nullable UpgradeCallback callback) {
-        this.callback = callback;
+    public void setUpgradeCallback(@Nullable UpgradeCallback upgradeCallback) {
+        this.upgradeCallback = upgradeCallback;
+    }
+
+    public void setBuildCallback(Runnable buildCallback) {
+        this.buildCallback = buildCallback;
     }
 
     private void createDataBase() {
@@ -117,11 +130,11 @@ class DataBaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(final SQLiteDatabase db, final int oldVersion, final int newVersion) {
-        if (callback != null) {
+        if (upgradeCallback != null) {
             DBThread.EXECUTOR.execute(new Runnable() {
                 @Override
                 public void run() {
-                    callback.onUpgrade(db, oldVersion, newVersion);
+                    upgradeCallback.onUpgrade(db, oldVersion, newVersion);
                 }
             });
         }
