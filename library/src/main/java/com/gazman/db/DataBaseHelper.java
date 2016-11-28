@@ -4,6 +4,8 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.crashlytics.android.Crashlytics;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -81,6 +83,7 @@ class DataBaseHelper extends SQLiteOpenHelper {
         try {
             input = context.getAssets().open(assetsPath);
         } catch (IOException e) {
+            Crashlytics.logException(e);
             throw new Error("Failed open DB " + assetsPath);
         }
         String outFileName = dataBasePath + dataBaseName;
@@ -88,6 +91,7 @@ class DataBaseHelper extends SQLiteOpenHelper {
         try {
             output = new FileOutputStream(outFileName);
         } catch (FileNotFoundException e) {
+            Crashlytics.logException(e);
             throw new Error("Database not found in assets " + outFileName);
         }
         byte[] buffer = new byte[1024];
@@ -98,21 +102,25 @@ class DataBaseHelper extends SQLiteOpenHelper {
                 length = input.read(buffer);
             }
         } catch (IOException e) {
+            Crashlytics.logException(e);
             e.printStackTrace();
         } finally {
             try {
                 output.flush();
             } catch (IOException e) {
+                Crashlytics.logException(e);
                 e.printStackTrace();
             }
             try {
                 output.close();
             } catch (IOException e) {
+                Crashlytics.logException(e);
                 e.printStackTrace();
             }
             try {
                 input.close();
             } catch (IOException e) {
+                Crashlytics.logException(e);
                 e.printStackTrace();
             }
         }
