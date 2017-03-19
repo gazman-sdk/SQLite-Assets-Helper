@@ -3,6 +3,8 @@ package com.gazman.db;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
+import com.crashlytics.android.Crashlytics;
+
 import io.requery.android.database.DatabaseErrorHandler;
 import io.requery.android.database.sqlite.SQLiteDatabase;
 
@@ -31,6 +33,27 @@ public class DataBase {
             @Override
             public void run() {
                 queryCallback.onQuery(helper.getWritableDatabase());
+            }
+        });
+    }
+
+    public void makeTransaction(final DataBaseQueryCallback queryCallback){
+        DBThread.EXECUTOR.execute(new Runnable() {
+            @Override
+            public void run() {
+                SQLiteDatabase db = helper.getWritableDatabase();
+                try{
+                    db.beginTransaction();
+                    queryCallback.onQuery(db);
+                    db.setTransactionSuccessful();
+                }
+                catch (Exception e){
+                    Crashlytics.logException(e);
+                    e.printStackTrace();
+                }
+                finally {
+                    db.endTransaction();
+                }
             }
         });
     }

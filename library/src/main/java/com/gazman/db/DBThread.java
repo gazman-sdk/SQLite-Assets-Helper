@@ -8,5 +8,27 @@ import java.util.concurrent.Executors;
  */
 public final class DBThread {
 
-    public static final ExecutorService EXECUTOR = Executors.newSingleThreadExecutor();
+    private static final ExecutorService EXECUTOR = Executors.newSingleThreadExecutor();
+    private static volatile Thread thread;
+
+    static {
+        EXECUTOR.execute(new Runnable() {
+            @Override
+            public void run() {
+                DBThread.thread = Thread.currentThread();
+            }
+        });
+    }
+
+    public static void execute(Runnable runnable) {
+        while (thread == null){
+            Thread.yield();
+        }
+
+        if (thread == Thread.currentThread()) {
+            runnable.run();
+        } else {
+            EXECUTOR.execute(runnable);
+        }
+    }
 }
