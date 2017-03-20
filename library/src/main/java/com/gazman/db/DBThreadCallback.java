@@ -1,6 +1,7 @@
-package com.gazman.db.callbacks;
+package com.gazman.db;
 
 import com.gazman.db.DBThread;
+import com.gazman.db.callbacks.DataBaseDataCallback;
 
 /**
  * Created by Ilya Gazman on 7/9/2016.

@@ -8,7 +8,7 @@ import java.util.concurrent.Executors;
  */
 public final class DBThread {
 
-    private static final ExecutorService EXECUTOR = Executors.newSingleThreadExecutor();
+    static final ExecutorService EXECUTOR = Executors.newSingleThreadExecutor();
     private static volatile Thread thread;
 
     static {

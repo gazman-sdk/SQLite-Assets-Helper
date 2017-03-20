@@ -20,7 +20,7 @@ public class DataBase {
     }
 
     public void getReadableDatabase(final DataBaseQueryCallback queryCallback){
-        DBThread.EXECUTOR.execute(new Runnable() {
+        DBThread.execute(new Runnable() {
             @Override
             public void run() {
                 queryCallback.onQuery(helper.getReadableDatabase());
@@ -29,7 +29,7 @@ public class DataBase {
     }
 
     public void getWritableDatabase(final DataBaseQueryCallback queryCallback){
-        DBThread.EXECUTOR.execute(new Runnable() {
+        DBThread.execute(new Runnable() {
             @Override
             public void run() {
                 queryCallback.onQuery(helper.getWritableDatabase());
@@ -38,7 +38,7 @@ public class DataBase {
     }
 
     public void makeTransaction(final DataBaseQueryCallback queryCallback){
-        DBThread.EXECUTOR.execute(new Runnable() {
+        DBThread.execute(new Runnable() {
             @Override
             public void run() {
                 SQLiteDatabase db = helper.getWritableDatabase();
@@ -59,7 +59,7 @@ public class DataBase {
     }
 
     public void close(){
-        DBThread.EXECUTOR.execute(new Runnable() {
+        DBThread.execute(new Runnable() {
             @Override
             public void run() {
                 helper.close();
@@ -117,7 +117,7 @@ public class DataBase {
 
         public DataBase build() {
             final DataBase dataBase = new DataBase();
-            DBThread.EXECUTOR.execute(new Runnable() {
+            DBThread.execute(new Runnable() {
                 @Override
                 public void run() {
                     DataBaseHelper helper = new DataBaseHelper(context, dataBaseName, version, cursorFactory, databaseErrorHandler);

@@ -139,7 +139,7 @@ class DataBaseHelper extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(final SQLiteDatabase db, final int oldVersion, final int newVersion) {
         if (upgradeCallback != null) {
-            DBThread.EXECUTOR.execute(new Runnable() {
+            DBThread.execute(new Runnable() {
                 @Override
                 public void run() {
                     upgradeCallback.onUpgrade(db, oldVersion, newVersion);
