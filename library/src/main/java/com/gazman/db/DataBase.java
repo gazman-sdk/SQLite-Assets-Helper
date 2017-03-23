@@ -121,11 +121,11 @@ public class DataBase {
                 @Override
                 public void run() {
                     DataBaseHelper helper = new DataBaseHelper(context, dataBaseName, version, cursorFactory, databaseErrorHandler);
+                    dataBase.init(helper);
                     helper.setAssetsPath(assetsPath);
                     helper.setUpgradeCallback(upgradeCallback);
                     helper.setBuildCallback(buildCallback);
                     helper.load();
-                    dataBase.init(helper);
                 }
             });
             return dataBase;
