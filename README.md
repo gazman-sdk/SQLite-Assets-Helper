@@ -47,12 +47,12 @@ dataBase.getReadableDatabase(new DataBaseQueryCallback() {
                 list.add(userData);
             }while (cursor.moveToNext());
         }
-        callback.setResponse(list);
+        successCallback.setResponse(list);
     }
 });
 ```
 
-callback can be _MainThreadCallback_ to handle the response on main thread or 
+successCallback can be _MainThreadCallback_ to handle the response on main thread or
 _DBThreadCallback_ to handle the response on database thread.
 
 You can also extend DataBaseDataCallback and provide it with your own handler or executor.
@@ -88,7 +88,7 @@ dataBase.getReadableDatabase(new DataBaseQueryCallback() {
             }
         };
 
-        callback.setResponse(users);
+        successCallback.setResponse(users);
         cursor.close();
     }
 });
