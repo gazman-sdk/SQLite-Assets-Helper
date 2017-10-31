@@ -12,16 +12,11 @@ public final class DBThread {
     private static volatile Thread thread;
 
     static {
-        EXECUTOR.execute(new Runnable() {
-            @Override
-            public void run() {
-                DBThread.thread = Thread.currentThread();
-            }
-        });
+        EXECUTOR.execute(() -> DBThread.thread = Thread.currentThread());
     }
 
     public static void execute(Runnable runnable) {
-        while (thread == null){
+        while (thread == null) {
             Thread.yield();
         }
 

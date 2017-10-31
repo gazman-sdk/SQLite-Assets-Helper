@@ -15,56 +15,36 @@ public class DataBase {
 
     private DataBaseHelper helper;
 
-    void init(DataBaseHelper helper){
+    void init(DataBaseHelper helper) {
         this.helper = helper;
     }
 
-    public void getReadableDatabase(final DataBaseQueryCallback queryCallback){
-        DBThread.execute(new Runnable() {
-            @Override
-            public void run() {
-                queryCallback.onQuery(helper.getReadableDatabase());
+    public void getReadableDatabase(final DataBaseQueryCallback queryCallback) {
+        DBThread.execute(() -> queryCallback.onQuery(helper.getReadableDatabase()));
+    }
+
+    public void getWritableDatabase(final DataBaseQueryCallback queryCallback) {
+        DBThread.execute(() -> queryCallback.onQuery(helper.getWritableDatabase()));
+    }
+
+    public void makeTransaction(final DataBaseQueryCallback queryCallback) {
+        DBThread.execute(() -> {
+            SQLiteDatabase db = helper.getWritableDatabase();
+            try {
+                db.beginTransaction();
+                queryCallback.onQuery(db);
+                db.setTransactionSuccessful();
+            } catch (Exception e) {
+                Crashlytics.logException(e);
+                e.printStackTrace();
+            } finally {
+                db.endTransaction();
             }
         });
     }
 
-    public void getWritableDatabase(final DataBaseQueryCallback queryCallback){
-        DBThread.execute(new Runnable() {
-            @Override
-            public void run() {
-                queryCallback.onQuery(helper.getWritableDatabase());
-            }
-        });
-    }
-
-    public void makeTransaction(final DataBaseQueryCallback queryCallback){
-        DBThread.execute(new Runnable() {
-            @Override
-            public void run() {
-                SQLiteDatabase db = helper.getWritableDatabase();
-                try{
-                    db.beginTransaction();
-                    queryCallback.onQuery(db);
-                    db.setTransactionSuccessful();
-                }
-                catch (Exception e){
-                    Crashlytics.logException(e);
-                    e.printStackTrace();
-                }
-                finally {
-                    db.endTransaction();
-                }
-            }
-        });
-    }
-
-    public void close(){
-        DBThread.execute(new Runnable() {
-            @Override
-            public void run() {
-                helper.close();
-            }
-        });
+    public void close() {
+        DBThread.execute(helper::close);
     }
 
     public static class Builder {
@@ -92,6 +72,7 @@ public class DataBase {
 
         public Builder setBuildCallback(Runnable buildCallback) {
             this.buildCallback = buildCallback;
+            this.buildCallback = buildCallback;
             return this;
         }
 
@@ -117,16 +98,13 @@ public class DataBase {
 
         public DataBase build() {
             final DataBase dataBase = new DataBase();
-            DBThread.execute(new Runnable() {
-                @Override
-                public void run() {
-                    DataBaseHelper helper = new DataBaseHelper(context, dataBaseName, version, cursorFactory, databaseErrorHandler);
-                    dataBase.init(helper);
-                    helper.setAssetsPath(assetsPath);
-                    helper.setUpgradeCallback(upgradeCallback);
-                    helper.setBuildCallback(buildCallback);
-                    helper.load();
-                }
+            DBThread.execute(() -> {
+                DataBaseHelper helper = new DataBaseHelper(context, dataBaseName, version, cursorFactory, databaseErrorHandler);
+                dataBase.init(helper);
+                helper.setAssetsPath(assetsPath);
+                helper.setUpgradeCallback(upgradeCallback);
+                helper.setBuildCallback(buildCallback);
+                helper.load();
             });
             return dataBase;
         }

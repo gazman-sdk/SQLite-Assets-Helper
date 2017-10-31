@@ -42,7 +42,7 @@ class DataBaseHelper extends SQLiteOpenHelper {
         boolean isDataBaseExist = new File(dataBasePath + dataBaseName).exists();
         if (!isDataBaseExist) {
             createDataBase();
-            if(buildCallback != null){
+            if (buildCallback != null) {
                 buildCallback.run();
             }
         }
@@ -139,12 +139,7 @@ class DataBaseHelper extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(final SQLiteDatabase db, final int oldVersion, final int newVersion) {
         if (upgradeCallback != null) {
-            DBThread.execute(new Runnable() {
-                @Override
-                public void run() {
-                    upgradeCallback.onUpgrade(db, oldVersion, newVersion);
-                }
-            });
+            DBThread.execute(() -> upgradeCallback.onUpgrade(db, oldVersion, newVersion));
         }
     }
 

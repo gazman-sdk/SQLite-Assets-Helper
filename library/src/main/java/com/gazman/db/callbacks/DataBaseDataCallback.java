@@ -23,22 +23,11 @@ public abstract class DataBaseDataCallback<T> {
     }
 
     public void sendResponse(final T responseData) {
-        if(executorService != null){
-            executorService.execute(new Runnable() {
-                @Override
-                public void run() {
-                    onResponse(responseData);
-                }
-            });
-        }
-        else{
+        if (executorService != null) {
+            executorService.execute(() -> onResponse(responseData));
+        } else {
             assert handler != null;
-            handler.post(new Runnable() {
-                @Override
-                public void run() {
-                    onResponse(responseData);
-                }
-            });
+            handler.post(() -> onResponse(responseData));
         }
     }
 

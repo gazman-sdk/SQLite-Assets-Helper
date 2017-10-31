@@ -1,6 +1,6 @@
 package com.gazman.assetsdb;
 
-public class UserData{
+public class UserData {
     public String firstName;
     public String lastName;
 
