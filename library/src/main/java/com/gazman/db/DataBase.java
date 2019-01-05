@@ -6,7 +6,6 @@ import android.support.annotation.NonNull;
 import com.crashlytics.android.Crashlytics;
 
 import io.requery.android.database.DatabaseErrorHandler;
-import io.requery.android.database.sqlite.SQLiteCursor;
 import io.requery.android.database.sqlite.SQLiteDatabase;
 
 /**
@@ -16,7 +15,7 @@ public class DataBase {
 
     private DataBaseHelper helper;
 
-    void init(DataBaseHelper helper) {
+    private void init(DataBaseHelper helper) {
         this.helper = helper;
     }
 
@@ -72,7 +71,6 @@ public class DataBase {
         }
 
         public Builder setBuildCallback(Runnable buildCallback) {
-            this.buildCallback = buildCallback;
             this.buildCallback = buildCallback;
             return this;
         }

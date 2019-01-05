@@ -1,6 +1,7 @@
 package com.gazman.db;
 
 import android.database.Cursor;
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import java.util.ArrayList;
@@ -23,6 +24,7 @@ public abstract class CursorList<E> extends ArrayList<E> {
 
     protected abstract E processRaw(Cursor cursor);
 
+    @NonNull
     @Override
     public String toString() {
         return TextUtils.join(",", this);
