@@ -1,10 +1,11 @@
 package com.gazman.db;
 
 import android.database.Cursor;
-import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import java.util.ArrayList;
+
+import androidx.annotation.NonNull;
 
 /**
  * Created by Ilya Gazman on 7/9/2016.
