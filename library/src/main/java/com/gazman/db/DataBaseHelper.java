@@ -1,6 +1,9 @@
 package com.gazman.db;
 
 import android.content.Context;
+import android.database.DatabaseErrorHandler;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
 
 import com.crashlytics.android.Crashlytics;
 
@@ -13,9 +16,7 @@ import java.io.OutputStream;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import io.requery.android.database.DatabaseErrorHandler;
-import io.requery.android.database.sqlite.SQLiteDatabase;
-import io.requery.android.database.sqlite.SQLiteOpenHelper;
+
 
 /**
  * Created by Ilya Gazman on 7/9/2016.
