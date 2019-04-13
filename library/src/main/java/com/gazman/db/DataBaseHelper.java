@@ -8,7 +8,6 @@ import android.database.sqlite.SQLiteOpenHelper;
 import com.crashlytics.android.Crashlytics;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -79,58 +78,23 @@ class DataBaseHelper extends SQLiteOpenHelper {
     }
 
     private void copyDataBase() {
-        InputStream input;
         String assetsPath = this.assetsPath + dataBaseName + ".db";
-        try {
-            input = context.getAssets().open(assetsPath);
-        } catch (IOException e) {
-            Crashlytics.logException(e);
-            throw new Error("Failed open DB " + assetsPath);
-        }
         String outFileName = dataBasePath + dataBaseName;
-        OutputStream output;
-        try {
-            output = new FileOutputStream(outFileName);
-        } catch (FileNotFoundException e) {
-            Crashlytics.logException(e);
-            throw new Error("Database not found in assets " + outFileName);
-        }
-        byte[] buffer = new byte[1024];
-        try {
+        try (InputStream input = context.getAssets().open(assetsPath);
+             OutputStream output = new FileOutputStream(outFileName)) {
+            byte[] buffer = new byte[1024];
             int length = input.read(buffer);
-            while (length > 0) {
-                output.write(buffer, 0, length);
+            while (length != -1) {
+                if (length > 0) {
+                    output.write(buffer, 0, length);
+                }
                 length = input.read(buffer);
             }
         } catch (IOException e) {
             Crashlytics.logException(e);
-            e.printStackTrace();
-        } finally {
-            try {
-                output.flush();
-            } catch (IOException e) {
-                Crashlytics.logException(e);
-                e.printStackTrace();
-            }
-            try {
-                output.close();
-            } catch (IOException e) {
-                Crashlytics.logException(e);
-                e.printStackTrace();
-            }
-            try {
-                input.close();
-            } catch (IOException e) {
-                Crashlytics.logException(e);
-                e.printStackTrace();
-            }
+            throw new Error("Database not found in assets " + outFileName);
         }
     }
-
-//    public SQLiteDatabase openDataBase() {
-//        String mPath = dataBasePath + dataBaseName;
-//        return SQLiteDatabase.openDatabase(mPath, null, SQLiteDatabase.CREATE_IF_NECESSARY);
-//    }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
