@@ -10,7 +10,7 @@ import com.gazman.db.callbacks.MainThreadCallback;
 
 import java.util.ArrayList;
 
-import android.database.sqlitesqlite.SQLiteDatabase;
+import io.requery.android.database.sqlite.SQLiteDatabase;
 
 /**
  * Created by Ilya Gazman on 7/9/2016.

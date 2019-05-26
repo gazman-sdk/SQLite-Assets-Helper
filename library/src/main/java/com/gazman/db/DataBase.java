@@ -1,12 +1,12 @@
 package com.gazman.db;
 
 import android.content.Context;
-import android.database.DatabaseErrorHandler;
-import android.database.sqlite.SQLiteDatabase;
 
 import com.crashlytics.android.Crashlytics;
 
 import androidx.annotation.NonNull;
+import io.requery.android.database.DatabaseErrorHandler;
+import io.requery.android.database.sqlite.SQLiteDatabase;
 
 /**
  * Created by Ilya Gazman on 7/9/2016.
@@ -24,7 +24,12 @@ public class DataBase {
     }
 
     public void getWritableDatabase(final DataBaseQueryCallback queryCallback) {
-        DBThread.execute(() -> queryCallback.onQuery(helper.getWritableDatabase()));
+        DBThread.execute(new Runnable() {
+            @Override
+            public void run() {
+                queryCallback.onQuery(helper.getWritableDatabase());
+            }
+        });
     }
 
     public void makeTransaction(final DataBaseQueryCallback queryCallback) {

@@ -1,7 +1,6 @@
 package com.gazman.db;
 
-
-import android.database.sqlite.SQLiteDatabase;
+import io.requery.android.database.sqlite.SQLiteDatabase;
 
 /**
  * Created by Ilya Gazman on 7/9/2016.
