@@ -1,29 +1,35 @@
 package com.gazman.db;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import android.os.Handler;
+import android.os.Looper;
 
 /**
  * Created by Ilya Gazman on 7/9/2016.
  */
 public final class DBThread {
 
-    static final ExecutorService EXECUTOR = Executors.newSingleThreadExecutor();
-    private static volatile Thread thread;
+    static Handler handler;
 
     static {
-        EXECUTOR.execute(() -> DBThread.thread = Thread.currentThread());
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Looper.prepare();
+                handler = new Handler(Looper.myLooper());
+                Looper.loop();
+            }
+        }).start();
     }
 
     public static void execute(Runnable runnable) {
-        while (thread == null) {
+        while (handler == null) {
             Thread.yield();
         }
 
-        if (thread == Thread.currentThread()) {
+        if (handler.getLooper() == Looper.myLooper()) {
             runnable.run();
         } else {
-            EXECUTOR.execute(runnable);
+            handler.post(runnable);
         }
     }
 }

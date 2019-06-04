@@ -24,12 +24,7 @@ public class DataBase {
     }
 
     public void getWritableDatabase(final DataBaseQueryCallback queryCallback) {
-        DBThread.execute(new Runnable() {
-            @Override
-            public void run() {
-                queryCallback.onQuery(helper.getWritableDatabase());
-            }
-        });
+        DBThread.execute(() -> queryCallback.onQuery(helper.getWritableDatabase()));
     }
 
     public void makeTransaction(final DataBaseQueryCallback queryCallback) {

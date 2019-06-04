@@ -8,6 +8,6 @@ import com.gazman.db.callbacks.DataBaseDataCallback;
 public abstract class DBThreadCallback<T> extends DataBaseDataCallback<T> {
 
     protected DBThreadCallback() {
-        super(DBThread.EXECUTOR);
+        super(DBThread.handler);
     }
 }
