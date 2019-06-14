@@ -2,7 +2,8 @@ package com.gazman.db;
 
 import android.content.Context;
 
-import com.crashlytics.android.Crashlytics;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -10,8 +11,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import io.requery.android.database.DatabaseErrorHandler;
 import io.requery.android.database.sqlite.SQLiteDatabase;
 import io.requery.android.database.sqlite.SQLiteOpenHelper;
@@ -90,7 +89,7 @@ class DataBaseHelper extends SQLiteOpenHelper {
                 length = input.read(buffer);
             }
         } catch (IOException e) {
-            Crashlytics.logException(e);
+            ErrorAnalytics.logException(e);
             throw new Error("Database not found in assets " + outFileName);
         }
     }

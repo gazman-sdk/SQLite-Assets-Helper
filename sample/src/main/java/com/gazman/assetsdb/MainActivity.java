@@ -1,8 +1,9 @@
 package com.gazman.assetsdb;
 
 import android.os.Bundle;
-import androidx.appcompat.app.AppCompatActivity;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.gazman.db.callbacks.MainThreadCallback;
 

@@ -3,9 +3,9 @@ package com.gazman.db;
 import android.database.Cursor;
 import android.text.TextUtils;
 
-import java.util.ArrayList;
-
 import androidx.annotation.NonNull;
+
+import java.util.ArrayList;
 
 /**
  * Created by Ilya Gazman on 7/9/2016.

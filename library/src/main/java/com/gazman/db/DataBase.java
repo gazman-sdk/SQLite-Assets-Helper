@@ -2,9 +2,8 @@ package com.gazman.db;
 
 import android.content.Context;
 
-import com.crashlytics.android.Crashlytics;
-
 import androidx.annotation.NonNull;
+
 import io.requery.android.database.DatabaseErrorHandler;
 import io.requery.android.database.sqlite.SQLiteDatabase;
 
@@ -35,7 +34,7 @@ public class DataBase {
                 queryCallback.onQuery(db);
                 db.setTransactionSuccessful();
             } catch (Exception e) {
-                Crashlytics.logException(e);
+                ErrorAnalytics.logException(e);
                 e.printStackTrace();
             } finally {
                 db.endTransaction();
