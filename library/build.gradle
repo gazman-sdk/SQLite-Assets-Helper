@@ -35,7 +35,8 @@ dependencies {
     implementation('com.crashlytics.sdk.android:crashlytics:2.8.0@aar') {
         transitive = true
     }
-    implementation 'io.requery:sqlite-android:3.28.0'
+    //    implementation 'io.requery:sqlite-android:3.28.0'
+    implementation project(':sqlite')
     implementation 'org.jetbrains:annotations:17.0.0'
     implementation 'androidx.sqlite:sqlite:2.0.1'
 
