@@ -34,9 +34,9 @@ public final class DBThread {
     }
 
     public static void synchronize() {
-        synchronized (DBThread.class){
+        synchronized (DBThread.class) {
             execute(() -> {
-                synchronized (DBThread.class){
+                synchronized (DBThread.class) {
                     DBThread.class.notifyAll();
                 }
             });

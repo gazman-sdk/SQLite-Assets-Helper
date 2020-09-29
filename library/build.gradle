@@ -1,17 +1,12 @@
 apply plugin: 'com.android.library'
 
-repositories {
-    maven { url 'https://maven.fabric.io/public' }
-    google()
-}
-
 android {
-    compileSdkVersion 28
-    buildToolsVersion '28.0.3'
+    compileSdkVersion 29
+    buildToolsVersion '29.0.2'
 
     defaultConfig {
         minSdkVersion 15
-        targetSdkVersion 28
+        targetSdkVersion 29
         versionCode 1
         versionName "1.0"
     }
@@ -28,17 +23,16 @@ android {
 }
 
 dependencies {
-    testImplementation 'junit:junit:4.13-beta-3'
-    implementation 'androidx.appcompat:appcompat:1.2.0-alpha03'
+    testImplementation 'junit:junit:4.13'
+    implementation 'androidx.appcompat:appcompat:1.3.0-alpha02'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    implementation 'androidx.media:media:1.2.0-alpha01'
-    implementation('com.crashlytics.sdk.android:crashlytics:2.10.1@aar') {
-        transitive = true
-    }
+    implementation 'androidx.media:media:1.2.0'
 
     implementation 'io.requery:sqlite-android:3.28.0'
-//    implementation project(':sqlite')
     implementation 'org.jetbrains:annotations:17.0.0'
     implementation 'androidx.sqlite:sqlite:2.1.0'
+
+    implementation 'com.google.firebase:firebase-crashlytics:17.2.2'
+    implementation 'com.google.firebase:firebase-analytics:17.5.0'
 
 }

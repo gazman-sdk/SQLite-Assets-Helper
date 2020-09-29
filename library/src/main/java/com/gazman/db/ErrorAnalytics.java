@@ -1,12 +1,12 @@
 package com.gazman.db;
 
-import com.crashlytics.android.Crashlytics;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 
 class ErrorAnalytics {
     public static void logException(Exception e) {
-        if(BuildConfig.DEBUG) {
+        if (BuildConfig.DEBUG) {
             e.printStackTrace();
         }
-        Crashlytics.logException(e);
+        FirebaseCrashlytics.getInstance().recordException(e);
     }
 }
