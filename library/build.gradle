@@ -32,7 +32,8 @@ dependencies {
     implementation 'org.jetbrains:annotations:20.1.0'
     implementation 'androidx.sqlite:sqlite:2.1.0'
 
-    implementation 'com.google.firebase:firebase-crashlytics:17.2.2'
-    implementation 'com.google.firebase:firebase-analytics:17.6.0'
+    implementation platform('com.google.firebase:firebase-bom:25.12.0')
+    implementation 'com.google.firebase:firebase-crashlytics'
+    implementation 'com.google.firebase:firebase-analytics'
 
 }
