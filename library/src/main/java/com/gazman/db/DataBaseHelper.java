@@ -19,13 +19,12 @@ import io.requery.android.database.sqlite.SQLiteOpenHelper;
  * Created by Ilya Gazman on 7/9/2016.
  */
 class DataBaseHelper extends SQLiteOpenHelper {
-    private String dataBasePath;
     private final String dataBaseName;
     private final Context context;
-
     @Nullable
     UpgradeCallback upgradeCallback;
     Runnable buildCallback;
+    private String dataBasePath;
     private String assetsPath;
 
     DataBaseHelper(Context context, String dataBaseName, int version, SQLiteDatabase.CursorFactory factory, DatabaseErrorHandler error) {

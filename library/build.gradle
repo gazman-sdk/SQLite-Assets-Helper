@@ -1,6 +1,6 @@
 apply plugin: 'com.android.library'
 
-repositories{
+repositories {
     maven { url 'https://jitpack.io' }
 }
 
@@ -25,13 +25,13 @@ android {
 
 dependencies {
     testImplementation 'junit:junit:4.13.2'
-    implementation 'androidx.appcompat:appcompat:1.4.0-alpha03'
+    implementation 'androidx.appcompat:appcompat:1.4.0'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    implementation 'androidx.media:media:1.4.1'
+    implementation 'androidx.media:media:1.4.3'
 
     implementation 'com.github.requery:sqlite-android:3.36.0'
     implementation 'org.jetbrains:annotations:22.0.0'
-    implementation 'androidx.sqlite:sqlite:2.1.0'
+    implementation 'androidx.sqlite:sqlite:2.2.0'
 
     implementation platform('com.google.firebase:firebase-bom:25.12.0')
     implementation 'com.google.firebase:firebase-crashlytics'
