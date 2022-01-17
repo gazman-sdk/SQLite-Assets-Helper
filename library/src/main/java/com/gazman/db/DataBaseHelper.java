@@ -107,7 +107,7 @@ class DataBaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        if(BuildConfig.DEBUG){
+        if (BuildConfig.DEBUG) {
             return;
         }
         super.onDowngrade(db, oldVersion, newVersion);
