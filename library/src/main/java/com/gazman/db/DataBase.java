@@ -19,11 +19,11 @@ public class DataBase {
     }
 
     public void getReadableDatabase(final DataBaseQueryCallback queryCallback) {
-        DBThread.execute(() -> queryCallback.onQuery(helper.getReadableDatabase()));
+        DBThread.execute(() -> queryCallback.onQuery(new DbProxy(helper.getReadableDatabase())));
     }
 
     public void getWritableDatabase(final DataBaseQueryCallback queryCallback) {
-        DBThread.execute(() -> queryCallback.onQuery(helper.getWritableDatabase()));
+        DBThread.execute(() -> queryCallback.onQuery(new DbProxy(helper.getWritableDatabase())));
     }
 
     public void makeTransaction(final DataBaseQueryCallback queryCallback) {
@@ -31,7 +31,7 @@ public class DataBase {
             SQLiteDatabase db = helper.getWritableDatabase();
             try {
                 db.beginTransaction();
-                queryCallback.onQuery(db);
+                queryCallback.onQuery(new DbProxy(db));
                 db.setTransactionSuccessful();
             } catch (Exception e) {
                 ErrorAnalytics.logException(e);
