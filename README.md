@@ -1,14 +1,16 @@
 # SQLite-Assets-Helper
+
 SQLite helper library.
- 
- - Load database from file
- - Synchronized access to the database
- - Using [sqlite-android](https://github.com/requery/sqlite-android) by requery, Android specific distribution of the latest versions of SQLite.
- 
+
+- Load database from file
+- Synchronized access to the database
+- Using [sqlite-android](https://github.com/requery/sqlite-android) by requery, Android specific
+  distribution of the latest versions of SQLite.
+
 # Usage
 
-Clone the repo and add the library module to your project. 
-It's better that you fork it first, so you can send pull requests latter.
+Clone the repo and add the library module to your project. It's better that you fork it first, so
+you can send pull requests latter.
 
 **Step 1**
 Add _myDb.db_ file to _yourProject/src/main/assets_
@@ -55,13 +57,13 @@ dataBase.getReadableDatabase(new DataBaseQueryCallback() {
 successCallback can be _MainThreadCallback_ to handle the response on main thread or
 _DBThreadCallback_ to handle the response on database thread.
 
-You can also extend DataBaseDataCallback and provide it with your own handler or executor.
-See the sample module for the full example.
+You can also extend DataBaseDataCallback and provide it with your own handler or executor. See the
+sample module for the full example.
 
 _____
 
-You can also use the _CursorList_, it extend the _ArrayList_ and add some performance boost,
-It will prevent you from _calling cursor.getColumnIndex()_ more than once.
+You can also use the _CursorList_, it extend the _ArrayList_ and add some performance boost, It will
+prevent you from _calling cursor.getColumnIndex()_ more than once.
 
 ```Java
 dataBase.getReadableDatabase(new DataBaseQueryCallback() {
@@ -94,6 +96,7 @@ dataBase.getReadableDatabase(new DataBaseQueryCallback() {
 });
 ```
 
-# License 
+# License
+
 Apache License Version 2.0, January 2004
 http://www.apache.org/licenses/

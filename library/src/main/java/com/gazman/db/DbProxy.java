@@ -23,13 +23,9 @@ import io.requery.android.database.sqlite.SQLiteStatement;
 public class DbProxy implements SupportSQLiteDatabase {
     public static final int CONFLICT_IGNORE = SQLiteDatabase.CONFLICT_IGNORE;
     public static final int CONFLICT_REPLACE = SQLiteDatabase.CONFLICT_REPLACE;
+    public static @Nullable
+    QueryLogger queryLogger;
     private final SQLiteDatabase db;
-
-    public static @Nullable QueryLogger queryLogger;
-
-    public interface QueryLogger{
-        void onQuery(String query);
-    }
 
     public DbProxy(SQLiteDatabase db) {
         this.db = db;
@@ -180,8 +176,8 @@ public class DbProxy implements SupportSQLiteDatabase {
 
     private void log(String query) {
         QueryLogger queryLogger = DbProxy.queryLogger;
-        if(queryLogger != null){
-           queryLogger.onQuery(query);
+        if (queryLogger != null) {
+            queryLogger.onQuery(query);
         }
     }
 
@@ -256,5 +252,9 @@ public class DbProxy implements SupportSQLiteDatabase {
 
     public Cursor rawQuery(String sql, Object[] selectionArgs) {
         return db.rawQuery(sql, selectionArgs);
+    }
+
+    public interface QueryLogger {
+        void onQuery(String query);
     }
 }
