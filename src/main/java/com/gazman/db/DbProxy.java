@@ -144,7 +144,7 @@ public class DbProxy implements SupportSQLiteDatabase {
         return db.insert(table, conflictAlgorithm, values);
     }
 
-    public long insert(String table, String nullColumnHack, ContentValues values) {
+    public long insert(String table, @Nullable String nullColumnHack, ContentValues values) {
         return db.insert(table, nullColumnHack, values);
     }
 
@@ -246,7 +246,7 @@ public class DbProxy implements SupportSQLiteDatabase {
         db.close();
     }
 
-    public void insertWithOnConflict(String tableName, String nullColumnHack, ContentValues values, int conflictIgnore) {
+    public void insertWithOnConflict(String tableName, @Nullable String nullColumnHack, ContentValues values, int conflictIgnore) {
         db.insertWithOnConflict(tableName, nullColumnHack, values, conflictIgnore);
     }
 
