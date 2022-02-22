@@ -1,35 +1,33 @@
-package com.gazman.db.callbacks;
+package com.gazman.db.callbacks
 
-import android.os.Handler;
-
-import java.util.concurrent.ExecutorService;
+import android.os.Handler
+import java.util.concurrent.ExecutorService
 
 /**
  * Created by Ilya Gazman on 7/9/2016.
  */
-public abstract class DataBaseDataCallback<T> {
+abstract class DataBaseDataCallback<T> {
+    private val handler: Handler?
+    private val executorService: ExecutorService?
 
-    private final Handler handler;
-    private final ExecutorService executorService;
-
-    protected DataBaseDataCallback(ExecutorService executorService) {
-        this.executorService = executorService;
-        handler = null;
+    protected constructor(executorService: ExecutorService?) {
+        this.executorService = executorService
+        handler = null
     }
 
-    protected DataBaseDataCallback(Handler handler) {
-        this.handler = handler;
-        executorService = null;
+    protected constructor(handler: Handler?) {
+        this.handler = handler
+        executorService = null
     }
 
-    public void sendResponse(final T responseData) {
+    fun sendResponse(responseData: T) {
         if (executorService != null) {
-            executorService.execute(() -> onResponse(responseData));
+            executorService.execute(Runnable { onResponse(responseData) })
         } else {
-            assert handler != null;
-            handler.post(() -> onResponse(responseData));
+            assert(handler != null)
+            handler!!.post { onResponse(responseData) }
         }
     }
 
-    protected abstract void onResponse(T responseData);
+    protected abstract fun onResponse(responseData: T)
 }

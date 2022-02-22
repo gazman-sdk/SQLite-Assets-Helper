@@ -1,33 +1,24 @@
-package com.gazman.db;
+package com.gazman.db
 
-import android.database.Cursor;
-import android.text.TextUtils;
-
-import androidx.annotation.NonNull;
-
-import java.util.ArrayList;
+import android.database.Cursor
+import android.text.TextUtils
 
 /**
  * Created by Ilya Gazman on 7/9/2016.
  */
-public abstract class CursorList<E> extends ArrayList<E> {
-    public CursorList(Cursor cursor) {
-        if (cursor.moveToFirst()) {
-            initColumnIndexes(cursor);
-            do {
-                add(processRaw(cursor));
-            } while (cursor.moveToNext());
-        }
-
+abstract class CursorList<E>(cursor: Cursor) : ArrayList<E>() {
+    protected abstract fun initColumnIndexes(cursor: Cursor?)
+    protected abstract fun processRaw(cursor: Cursor?): E
+    override fun toString(): String {
+        return TextUtils.join(",", this)
     }
 
-    protected abstract void initColumnIndexes(Cursor cursor);
-
-    protected abstract E processRaw(Cursor cursor);
-
-    @NonNull
-    @Override
-    public String toString() {
-        return TextUtils.join(",", this);
+    init {
+        if (cursor.moveToFirst()) {
+            initColumnIndexes(cursor)
+            do {
+                add(processRaw(cursor))
+            } while (cursor.moveToNext())
+        }
     }
 }

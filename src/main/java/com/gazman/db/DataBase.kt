@@ -1,110 +1,104 @@
-package com.gazman.db;
+package com.gazman.db
 
-import android.content.Context;
-
-import androidx.annotation.NonNull;
-
-import io.requery.android.database.DatabaseErrorHandler;
-import io.requery.android.database.sqlite.SQLiteDatabase;
+import android.content.Context
+import io.requery.android.database.DatabaseErrorHandler
+import io.requery.android.database.sqlite.SQLiteDatabase
 
 /**
  * Created by Ilya Gazman on 7/9/2016.
  */
-public class DataBase {
-
-    private DataBaseHelper helper;
-
-    private void init(DataBaseHelper helper) {
-        this.helper = helper;
+class DataBase {
+    private var helper: DataBaseHelper? = null
+    private fun init(helper: DataBaseHelper) {
+        this.helper = helper
     }
 
-    public void getReadableDatabase(final DataBaseQueryCallback queryCallback) {
-        DBThread.execute(() -> queryCallback.onQuery(new DbProxy(helper.getReadableDatabase())));
+    fun getReadableDatabase(queryCallback: DataBaseQueryCallback) {
+        DBThread.execute { queryCallback.onQuery(DbProxy(helper!!.readableDatabase)) }
     }
 
-    public void getWritableDatabase(final DataBaseQueryCallback queryCallback) {
-        DBThread.execute(() -> queryCallback.onQuery(new DbProxy(helper.getWritableDatabase())));
+    fun getWritableDatabase(queryCallback: DataBaseQueryCallback) {
+        DBThread.execute { queryCallback.onQuery(DbProxy(helper!!.writableDatabase)) }
     }
 
-    public void makeTransaction(final DataBaseQueryCallback queryCallback) {
-        DBThread.execute(() -> {
-            SQLiteDatabase db = helper.getWritableDatabase();
+    fun makeTransaction(queryCallback: DataBaseQueryCallback) {
+        DBThread.execute {
+            val db = helper!!.writableDatabase
             try {
-                db.beginTransaction();
-                queryCallback.onQuery(new DbProxy(db));
-                db.setTransactionSuccessful();
-            } catch (Exception e) {
-                ErrorAnalytics.logException(e);
-                e.printStackTrace();
+                db.beginTransaction()
+                queryCallback.onQuery(DbProxy(db))
+                db.setTransactionSuccessful()
+            } catch (e: Exception) {
+                ErrorAnalytics.logException(e)
+                e.printStackTrace()
             } finally {
-                db.endTransaction();
+                db.endTransaction()
             }
-        });
+        }
     }
 
-    public void close() {
-        DBThread.execute(helper::close);
+    fun close() {
+        DBThread.execute { helper!!.close() }
     }
 
-    public static class Builder {
-        private final Context context;
-        private final String dataBaseName;
-        private String assetsPath = "databases";
-        private SQLiteDatabase.CursorFactory cursorFactory;
-        private DatabaseErrorHandler databaseErrorHandler;
-        private int version = 1;
-        private UpgradeCallback upgradeCallback;
-        private Runnable buildCallback;
+    class Builder
+    /**
+     * Creates new database with default assetsPath: "databases"
+     */(private val context: Context, private val dataBaseName: String) {
+        private var assetsPath = "databases"
+        private var cursorFactory: SQLiteDatabase.CursorFactory? = null
+        private var databaseErrorHandler: DatabaseErrorHandler? = null
+        private var version = 1
+        private var upgradeCallback: UpgradeCallback? = null
+        private var buildCallback: Runnable? = null
 
-        /**
-         * Creates new database with default assetsPath: "databases"
-         */
-        public Builder(Context context, String dataBaseName) {
-            this.context = context;
-            this.dataBaseName = dataBaseName;
+        fun setAssetsPath(assetsPath: String): Builder {
+            this.assetsPath = assetsPath
+            return this
         }
 
-        public Builder setAssetsPath(@NonNull String assetsPath) {
-            this.assetsPath = assetsPath;
-            return this;
+        fun setBuildCallback(buildCallback: Runnable?): Builder {
+            this.buildCallback = buildCallback
+            return this
         }
 
-        public Builder setBuildCallback(Runnable buildCallback) {
-            this.buildCallback = buildCallback;
-            return this;
+        fun setCursorFactory(cursorFactory: SQLiteDatabase.CursorFactory?): Builder {
+            this.cursorFactory = cursorFactory
+            return this
         }
 
-        public Builder setCursorFactory(SQLiteDatabase.CursorFactory cursorFactory) {
-            this.cursorFactory = cursorFactory;
-            return this;
+        fun setDatabaseErrorHandler(databaseErrorHandler: DatabaseErrorHandler?): Builder {
+            this.databaseErrorHandler = databaseErrorHandler
+            return this
         }
 
-        public Builder setDatabaseErrorHandler(DatabaseErrorHandler databaseErrorHandler) {
-            this.databaseErrorHandler = databaseErrorHandler;
-            return this;
+        fun setVersion(version: Int): Builder {
+            this.version = version
+            return this
         }
 
-        public Builder setVersion(int version) {
-            this.version = version;
-            return this;
+        fun setUpgradeCallback(upgradeCallback: UpgradeCallback): Builder {
+            this.upgradeCallback = upgradeCallback
+            return this
         }
 
-        public Builder setUpgradeCallback(UpgradeCallback upgradeCallback) {
-            this.upgradeCallback = upgradeCallback;
-            return this;
-        }
-
-        public DataBase build() {
-            final DataBase dataBase = new DataBase();
-            DBThread.execute(() -> {
-                DataBaseHelper helper = new DataBaseHelper(context, dataBaseName, version, cursorFactory, databaseErrorHandler);
-                dataBase.init(helper);
-                helper.setAssetsPath(assetsPath);
-                helper.setUpgradeCallback(upgradeCallback);
-                helper.setBuildCallback(buildCallback);
-                helper.load();
-            });
-            return dataBase;
+        fun build(): DataBase {
+            val dataBase = DataBase()
+            DBThread.execute {
+                val helper = DataBaseHelper(
+                    context,
+                    dataBaseName,
+                    version,
+                    cursorFactory,
+                    databaseErrorHandler
+                )
+                dataBase.init(helper)
+                helper.setAssetsPath(assetsPath)
+                helper.upgradeCallback = upgradeCallback
+                helper.buildCallback = buildCallback
+                helper.load()
+            }
+            return dataBase
         }
     }
 }

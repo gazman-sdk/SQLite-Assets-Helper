@@ -1,260 +1,230 @@
-package com.gazman.db;
+package com.gazman.db
 
-import android.content.ContentValues;
-import android.database.Cursor;
-import android.database.SQLException;
-import android.database.sqlite.SQLiteTransactionListener;
-import android.os.Build;
-import android.os.CancellationSignal;
-import android.util.Pair;
+import android.content.ContentValues
+import android.database.Cursor
+import android.database.SQLException
+import android.database.sqlite.SQLiteTransactionListener
+import android.os.Build
+import android.os.CancellationSignal
+import android.util.Pair
+import androidx.annotation.RequiresApi
+import androidx.sqlite.db.SupportSQLiteDatabase
+import androidx.sqlite.db.SupportSQLiteQuery
+import io.requery.android.database.sqlite.SQLiteDatabase
+import io.requery.android.database.sqlite.SQLiteStatement
+import java.io.IOException
+import java.util.*
 
-import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
-import androidx.sqlite.db.SupportSQLiteDatabase;
-import androidx.sqlite.db.SupportSQLiteQuery;
-
-import java.io.IOException;
-import java.util.List;
-import java.util.Locale;
-
-import io.requery.android.database.sqlite.SQLiteDatabase;
-import io.requery.android.database.sqlite.SQLiteStatement;
-
-public class DbProxy implements SupportSQLiteDatabase {
-    public static final int CONFLICT_IGNORE = SQLiteDatabase.CONFLICT_IGNORE;
-    public static final int CONFLICT_REPLACE = SQLiteDatabase.CONFLICT_REPLACE;
-    public static @Nullable
-    QueryLogger queryLogger;
-    private final SQLiteDatabase db;
-
-    public DbProxy(SQLiteDatabase db) {
-        this.db = db;
+class DbProxy(private val db: SQLiteDatabase) : SupportSQLiteDatabase {
+    override fun compileStatement(sql: String): SQLiteStatement {
+        return db.compileStatement(sql)
     }
 
-    @Override
-    public SQLiteStatement compileStatement(String sql) {
-        return db.compileStatement(sql);
+    override fun beginTransaction() {
+        db.beginTransaction()
     }
 
-    @Override
-    public void beginTransaction() {
-        db.beginTransaction();
+    override fun beginTransactionNonExclusive() {
+        db.beginTransactionNonExclusive()
     }
 
-    @Override
-    public void beginTransactionNonExclusive() {
-        db.beginTransactionNonExclusive();
+    override fun beginTransactionWithListener(transactionListener: SQLiteTransactionListener) {
+        db.beginTransactionWithListener(transactionListener)
     }
 
-    @Override
-    public void beginTransactionWithListener(SQLiteTransactionListener transactionListener) {
-        db.beginTransactionWithListener(transactionListener);
+    override fun beginTransactionWithListenerNonExclusive(transactionListener: SQLiteTransactionListener) {
+        db.beginTransactionWithListenerNonExclusive(transactionListener)
     }
 
-    @Override
-    public void beginTransactionWithListenerNonExclusive(SQLiteTransactionListener transactionListener) {
-        db.beginTransactionWithListenerNonExclusive(transactionListener);
+    override fun endTransaction() {
+        db.endTransaction()
     }
 
-    @Override
-    public void endTransaction() {
-        db.endTransaction();
+    override fun setTransactionSuccessful() {
+        db.setTransactionSuccessful()
     }
 
-    @Override
-    public void setTransactionSuccessful() {
-        db.setTransactionSuccessful();
+    override fun inTransaction(): Boolean {
+        return db.inTransaction()
     }
 
-    @Override
-    public boolean inTransaction() {
-        return db.inTransaction();
+    override fun isDbLockedByCurrentThread(): Boolean {
+        return db.isDbLockedByCurrentThread
     }
 
-    @Override
-    public boolean isDbLockedByCurrentThread() {
-        return db.isDbLockedByCurrentThread();
+    override fun yieldIfContendedSafely(): Boolean {
+        return db.yieldIfContendedSafely()
     }
 
-    @Override
-    public boolean yieldIfContendedSafely() {
-        return db.yieldIfContendedSafely();
+    override fun yieldIfContendedSafely(sleepAfterYieldDelay: Long): Boolean {
+        return db.yieldIfContendedSafely(sleepAfterYieldDelay)
     }
 
-    @Override
-    public boolean yieldIfContendedSafely(long sleepAfterYieldDelay) {
-        return db.yieldIfContendedSafely(sleepAfterYieldDelay);
+    override fun getVersion(): Int {
+        return db.version
     }
 
-    @Override
-    public int getVersion() {
-        return db.getVersion();
+    override fun setVersion(version: Int) {
+        db.version = version
     }
 
-    @Override
-    public void setVersion(int version) {
-        db.setVersion(version);
+    override fun getMaximumSize(): Long {
+        return db.maximumSize
     }
 
-    @Override
-    public long getMaximumSize() {
-        return db.getMaximumSize();
+    override fun setMaximumSize(numBytes: Long): Long {
+        return db.setMaximumSize(numBytes)
     }
 
-    @Override
-    public long setMaximumSize(long numBytes) {
-        return db.setMaximumSize(numBytes);
+    override fun getPageSize(): Long {
+        return db.pageSize
     }
 
-    @Override
-    public long getPageSize() {
-        return db.getPageSize();
+    override fun setPageSize(numBytes: Long) {
+        db.pageSize = numBytes
     }
 
-    @Override
-    public void setPageSize(long numBytes) {
-        db.setPageSize(numBytes);
+    override fun query(query: String): Cursor {
+        log(query)
+        return db.query(query)
     }
 
-    @Override
-    public Cursor query(String query) {
-        log(query);
-        return db.query(query);
+    override fun query(query: String, bindArgs: Array<Any>): Cursor {
+        log(query)
+        return db.query(query, bindArgs)
     }
 
-    @Override
-    public Cursor query(String query, Object[] bindArgs) {
-        log(query);
-        return db.query(query, bindArgs);
-    }
-
-    @Override
-    public Cursor query(SupportSQLiteQuery query) {
-        return db.query(query);
+    override fun query(query: SupportSQLiteQuery): Cursor {
+        return db.query(query)
     }
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
-    @Override
-    public Cursor query(SupportSQLiteQuery query, CancellationSignal cancellationSignal) {
-        return db.query(query, cancellationSignal);
+    override fun query(query: SupportSQLiteQuery, cancellationSignal: CancellationSignal): Cursor {
+        return db.query(query, cancellationSignal)
     }
 
-    @Override
-    public long insert(String table, int conflictAlgorithm, ContentValues values) throws SQLException {
-        return db.insert(table, conflictAlgorithm, values);
+    @Throws(SQLException::class)
+    override fun insert(table: String, conflictAlgorithm: Int, values: ContentValues): Long {
+        return db.insert(table, conflictAlgorithm, values)
     }
 
-    public long insert(String table, @Nullable String nullColumnHack, ContentValues values) {
-        return db.insert(table, nullColumnHack, values);
+    fun insert(table: String?, nullColumnHack: String?, values: ContentValues?): Long {
+        return db.insert(table, nullColumnHack, values)
     }
 
-    @Override
-    public int delete(String table, String whereClause, Object[] whereArgs) {
-        return db.delete(table, whereClause, whereArgs);
+    override fun delete(table: String, whereClause: String, whereArgs: Array<Any>?): Int {
+        return db.delete(table, whereClause, whereArgs)
     }
 
-    @Override
-    public int update(String table, int conflictAlgorithm, ContentValues values, String whereClause, Object[] whereArgs) {
-        return db.update(table, conflictAlgorithm, values, whereClause, whereArgs);
+    override fun update(
+        table: String,
+        conflictAlgorithm: Int,
+        values: ContentValues,
+        whereClause: String,
+        whereArgs: Array<Any>
+    ): Int {
+        return db.update(table, conflictAlgorithm, values, whereClause, whereArgs)
     }
 
-    public int update(String table, ContentValues values, String whereClause, String[] whereArgs) {
-        return db.update(table, values, whereClause, whereArgs);
+    fun update(
+        table: String?,
+        values: ContentValues?,
+        whereClause: String?,
+        whereArgs: Array<String?>?
+    ): Int {
+        return db.update(table, values, whereClause, whereArgs)
     }
 
-    @Override
-    public void execSQL(String query) throws SQLException {
-        log(query);
-        db.execSQL(query);
+    @Throws(SQLException::class)
+    override fun execSQL(query: String) {
+        log(query)
+        db.execSQL(query)
     }
 
-    @Override
-    public void execSQL(String query, Object[] bindArgs) throws SQLException {
-        log(query);
-        db.execSQL(query);
+    @Throws(SQLException::class)
+    override fun execSQL(query: String, bindArgs: Array<Any?>) {
+        log(query)
+        db.execSQL(query)
     }
 
-    private void log(String query) {
-        QueryLogger queryLogger = DbProxy.queryLogger;
-        if (queryLogger != null) {
-            queryLogger.onQuery(query);
-        }
+    private fun log(query: String) {
+        val queryLogger = queryLogger
+        queryLogger?.onQuery(query)
     }
 
-    @Override
-    public boolean isReadOnly() {
-        return db.isReadOnly();
+    override fun isReadOnly(): Boolean {
+        return db.isReadOnly
     }
 
-    @Override
-    public boolean isOpen() {
-        return db.isOpen();
+    override fun isOpen(): Boolean {
+        return db.isOpen
     }
 
-    @Override
-    public boolean needUpgrade(int newVersion) {
-        return db.needUpgrade(newVersion);
+    override fun needUpgrade(newVersion: Int): Boolean {
+        return db.needUpgrade(newVersion)
     }
 
-    @Override
-    public String getPath() {
-        return db.getPath();
+    override fun getPath(): String {
+        return db.path
     }
 
-    @Override
-    public void setLocale(Locale locale) {
-        db.setLocale(locale);
+    override fun setLocale(locale: Locale) {
+        db.setLocale(locale)
     }
 
-    @Override
-    public void setMaxSqlCacheSize(int cacheSize) {
-        db.setMaxSqlCacheSize(cacheSize);
+    override fun setMaxSqlCacheSize(cacheSize: Int) {
+        db.setMaxSqlCacheSize(cacheSize)
     }
 
-    @Override
-    public void setForeignKeyConstraintsEnabled(boolean enable) {
-        db.setForeignKeyConstraintsEnabled(enable);
+    override fun setForeignKeyConstraintsEnabled(enable: Boolean) {
+        db.setForeignKeyConstraintsEnabled(enable)
     }
 
-    @Override
-    public boolean enableWriteAheadLogging() {
-        return db.enableWriteAheadLogging();
+    override fun enableWriteAheadLogging(): Boolean {
+        return db.enableWriteAheadLogging()
     }
 
-    @Override
-    public void disableWriteAheadLogging() {
-        db.disableWriteAheadLogging();
+    override fun disableWriteAheadLogging() {
+        db.disableWriteAheadLogging()
     }
 
-    @Override
-    public boolean isWriteAheadLoggingEnabled() {
-        return db.isWriteAheadLoggingEnabled();
+    override fun isWriteAheadLoggingEnabled(): Boolean {
+        return db.isWriteAheadLoggingEnabled
     }
 
-    @Override
-    public List<Pair<String, String>> getAttachedDbs() {
-        return db.getAttachedDbs();
+    override fun getAttachedDbs(): List<Pair<String, String>> {
+        return db.attachedDbs
     }
 
-    @Override
-    public boolean isDatabaseIntegrityOk() {
-        return db.isDatabaseIntegrityOk();
+    override fun isDatabaseIntegrityOk(): Boolean {
+        return db.isDatabaseIntegrityOk
     }
 
-    @Override
-    public void close() throws IOException {
-        db.close();
+    @Throws(IOException::class)
+    override fun close() {
+        db.close()
     }
 
-    public void insertWithOnConflict(String tableName, @Nullable String nullColumnHack, ContentValues values, int conflictIgnore) {
-        db.insertWithOnConflict(tableName, nullColumnHack, values, conflictIgnore);
+    fun insertWithOnConflict(
+        tableName: String?,
+        nullColumnHack: String?,
+        values: ContentValues?,
+        conflictIgnore: Int
+    ) {
+        db.insertWithOnConflict(tableName, nullColumnHack, values, conflictIgnore)
     }
 
-    public Cursor rawQuery(String sql, Object[] selectionArgs) {
-        return db.rawQuery(sql, selectionArgs);
+    fun rawQuery(sql: String?, selectionArgs: Array<Any?>?): Cursor {
+        return db.rawQuery(sql, selectionArgs)
     }
 
-    public interface QueryLogger {
-        void onQuery(String query);
+    fun interface QueryLogger {
+        fun onQuery(query: String?)
+    }
+
+    companion object {
+        const val CONFLICT_IGNORE = SQLiteDatabase.CONFLICT_IGNORE
+        const val CONFLICT_REPLACE = SQLiteDatabase.CONFLICT_REPLACE
+        var queryLogger: QueryLogger? = null
     }
 }
