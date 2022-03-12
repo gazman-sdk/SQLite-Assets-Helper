@@ -143,8 +143,8 @@ class DbProxy(private val db: SQLiteDatabase) : SupportSQLiteDatabase {
 
     @Throws(SQLException::class)
     override fun execSQL(query: String, bindArgs: Array<Any?>) {
-        log(query)
-        db.execSQL(query)
+        log("$query args: $bindArgs")
+        db.execSQL(query, bindArgs)
     }
 
     private fun log(query: String) {

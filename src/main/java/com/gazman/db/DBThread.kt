@@ -10,7 +10,9 @@ import kotlin.concurrent.withLock
  * Created by Ilya Gazman on 7/9/2016.
  */
 object DBThread {
-    var handler = Handler(HandlerThread("db_thread").looper)
+    var handler = Handler(HandlerThread("db_thread").apply {
+        start()
+    }.looper)
     private val lock = ReentrantLock()
     private val condition = lock.newCondition()
 
