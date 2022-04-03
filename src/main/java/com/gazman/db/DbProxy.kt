@@ -112,7 +112,10 @@ class DbProxy(private val db: SQLiteDatabase) : SupportSQLiteDatabase {
         return db.insert(table, nullColumnHack, values)
     }
 
-    override fun delete(table: String, whereClause: String, whereArgs: Array<Any>?): Int {
+    fun delete(table: String) = db.delete(table, null, null)
+    fun delete(table: String, whereClause: String?) = db.delete(table, whereClause, null)
+
+    override fun delete(table: String, whereClause: String?, whereArgs: Array<Any>?): Int {
         return db.delete(table, whereClause, whereArgs)
     }
 
@@ -148,7 +151,6 @@ class DbProxy(private val db: SQLiteDatabase) : SupportSQLiteDatabase {
     }
 
     private fun log(query: String) {
-        val queryLogger = queryLogger
         queryLogger?.onQuery(query)
     }
 
@@ -214,7 +216,8 @@ class DbProxy(private val db: SQLiteDatabase) : SupportSQLiteDatabase {
         db.insertWithOnConflict(tableName, nullColumnHack, values, conflictIgnore)
     }
 
-    fun rawQuery(sql: String?, selectionArgs: Array<Any?>?): Cursor {
+    fun rawQuery(sql: String, selectionArgs: Array<Any?>? = null): Cursor {
+        log(sql)
         return db.rawQuery(sql, selectionArgs)
     }
 
