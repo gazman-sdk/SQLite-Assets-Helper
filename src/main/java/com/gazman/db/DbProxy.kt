@@ -116,6 +116,7 @@ class DbProxy(private val db: SQLiteDatabase) : SupportSQLiteDatabase {
     fun delete(table: String, whereClause: String?) = db.delete(table, whereClause, null)
 
     override fun delete(table: String, whereClause: String?, whereArgs: Array<Any>?): Int {
+        log("delete from $table where $whereClause ${whereArgs?.joinToString()}")
         return db.delete(table, whereClause, whereArgs)
     }
 
