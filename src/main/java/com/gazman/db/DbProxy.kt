@@ -10,13 +10,15 @@ import android.util.Pair
 import androidx.annotation.RequiresApi
 import androidx.sqlite.db.SupportSQLiteDatabase
 import androidx.sqlite.db.SupportSQLiteQuery
+import androidx.sqlite.db.SupportSQLiteStatement
 import io.requery.android.database.sqlite.SQLiteDatabase
-import io.requery.android.database.sqlite.SQLiteStatement
 import java.io.IOException
 import java.util.*
 
-class DbProxy(private val db: SQLiteDatabase) : SupportSQLiteDatabase {
-    override fun compileStatement(sql: String): SQLiteStatement {
+class DbProxy(private val db: SupportSQLiteDatabase) : SupportSQLiteDatabase {
+
+
+    override fun compileStatement(sql: String): SupportSQLiteStatement {
         return db.compileStatement(sql)
     }
 
@@ -108,8 +110,8 @@ class DbProxy(private val db: SQLiteDatabase) : SupportSQLiteDatabase {
         return db.insert(table, conflictAlgorithm, values)
     }
 
-    fun insert(table: String?, nullColumnHack: String?, values: ContentValues?): Long {
-        return db.insert(table, nullColumnHack, values)
+    fun insert(table: String?, values: ContentValues?): Long {
+        return db.insert(table, SQLiteDatabase.CONFLICT_NONE, values)
     }
 
     fun delete(table: String) = db.delete(table, null, null)
@@ -136,7 +138,7 @@ class DbProxy(private val db: SQLiteDatabase) : SupportSQLiteDatabase {
         whereClause: String?,
         whereArgs: Array<String?>?
     ): Int {
-        return db.update(table, values, whereClause, whereArgs)
+        return db.update(table, SQLiteDatabase.CONFLICT_NONE, values, whereClause, whereArgs)
     }
 
     @Throws(SQLException::class)
@@ -179,6 +181,7 @@ class DbProxy(private val db: SQLiteDatabase) : SupportSQLiteDatabase {
         db.setMaxSqlCacheSize(cacheSize)
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     override fun setForeignKeyConstraintsEnabled(enable: Boolean) {
         db.setForeignKeyConstraintsEnabled(enable)
     }
@@ -187,10 +190,12 @@ class DbProxy(private val db: SQLiteDatabase) : SupportSQLiteDatabase {
         return db.enableWriteAheadLogging()
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     override fun disableWriteAheadLogging() {
         db.disableWriteAheadLogging()
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     override fun isWriteAheadLoggingEnabled(): Boolean {
         return db.isWriteAheadLoggingEnabled
     }
@@ -210,16 +215,15 @@ class DbProxy(private val db: SQLiteDatabase) : SupportSQLiteDatabase {
 
     fun insertWithOnConflict(
         tableName: String?,
-        nullColumnHack: String?,
         values: ContentValues?,
         conflictIgnore: Int
     ) {
-        db.insertWithOnConflict(tableName, nullColumnHack, values, conflictIgnore)
+        db.insert(tableName, conflictIgnore, values)
     }
 
     fun rawQuery(sql: String, selectionArgs: Array<Any?>? = null): Cursor {
         log(sql)
-        return db.rawQuery(sql, selectionArgs)
+        return db.query(sql, selectionArgs)
     }
 
     fun interface QueryLogger {
