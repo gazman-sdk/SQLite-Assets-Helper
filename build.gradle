@@ -1,0 +1,41 @@
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+
+repositories {
+    maven { url 'https://jitpack.io' }
+}
+
+android {
+    compileSdkVersion 33
+
+    defaultConfig {
+        minSdkVersion 15
+        targetSdkVersion 33
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility 11
+        targetCompatibility 11
+    }
+}
+
+dependencies {
+    testImplementation 'junit:junit:4.13.2'
+    implementation 'androidx.appcompat:appcompat:1.5.1'
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation 'androidx.media:media:1.6.0'
+
+    implementation 'com.github.requery:sqlite-android:3.36.0'
+    implementation 'org.jetbrains:annotations:22.0.0'
+    implementation 'androidx.sqlite:sqlite-ktx:2.2.0'
+
+    implementation platform('com.google.firebase:firebase-bom:29.0.3')
+    implementation 'com.google.firebase:firebase-crashlytics'
+    implementation 'com.google.firebase:firebase-analytics'
+
+}
