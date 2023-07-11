@@ -6,7 +6,6 @@ import android.database.SQLException
 import android.database.sqlite.SQLiteTransactionListener
 import android.os.Build
 import android.os.CancellationSignal
-import android.util.Pair
 import androidx.annotation.RequiresApi
 import androidx.sqlite.db.SupportSQLiteDatabase
 import androidx.sqlite.db.SupportSQLiteQuery
@@ -15,12 +14,28 @@ import io.requery.android.database.sqlite.SQLiteDatabase
 import java.io.IOException
 import java.util.*
 
-class DbProxy(private val db: SupportSQLiteDatabase) : SupportSQLiteDatabase {
+class DbProxy(
+    private val db: SupportSQLiteDatabase
+) : SupportSQLiteDatabase {
+
+    override val attachedDbs = db.attachedDbs
+    override val isDatabaseIntegrityOk = db.isDatabaseIntegrityOk
+    override val isDbLockedByCurrentThread = db.isDbLockedByCurrentThread
+    override val isOpen = db.isOpen
+    override val isReadOnly = db.isReadOnly
+    override val isWriteAheadLoggingEnabled = db.isWriteAheadLoggingEnabled
+    override val maximumSize = db.maximumSize
+    override var pageSize = db.pageSize
+    override val path = db.path
+    override var version = db.version
 
 
     override fun compileStatement(sql: String): SupportSQLiteStatement {
         return db.compileStatement(sql)
     }
+
+    override fun delete(table: String, whereClause: String?, whereArgs: Array<out Any?>?) =
+        db.delete(table, whereClause, whereArgs)
 
     override fun beginTransaction() {
         db.beginTransaction()
@@ -46,44 +61,28 @@ class DbProxy(private val db: SupportSQLiteDatabase) : SupportSQLiteDatabase {
         db.setTransactionSuccessful()
     }
 
+    override fun update(
+        table: String,
+        conflictAlgorithm: Int,
+        values: ContentValues,
+        whereClause: String?,
+        whereArgs: Array<out Any?>?
+    ) = db.update(table, conflictAlgorithm, values, whereClause, whereArgs)
+
     override fun inTransaction(): Boolean {
         return db.inTransaction()
-    }
-
-    override fun isDbLockedByCurrentThread(): Boolean {
-        return db.isDbLockedByCurrentThread
     }
 
     override fun yieldIfContendedSafely(): Boolean {
         return db.yieldIfContendedSafely()
     }
 
-    override fun yieldIfContendedSafely(sleepAfterYieldDelay: Long): Boolean {
-        return db.yieldIfContendedSafely(sleepAfterYieldDelay)
-    }
-
-    override fun getVersion(): Int {
-        return db.version
-    }
-
-    override fun setVersion(version: Int) {
-        db.version = version
-    }
-
-    override fun getMaximumSize(): Long {
-        return db.maximumSize
+    override fun yieldIfContendedSafely(sleepAfterYieldDelayMillis: Long): Boolean {
+        return db.yieldIfContendedSafely(sleepAfterYieldDelayMillis)
     }
 
     override fun setMaximumSize(numBytes: Long): Long {
         return db.setMaximumSize(numBytes)
-    }
-
-    override fun getPageSize(): Long {
-        return db.pageSize
-    }
-
-    override fun setPageSize(numBytes: Long) {
-        db.pageSize = numBytes
     }
 
     override fun query(query: String): Cursor {
@@ -91,7 +90,7 @@ class DbProxy(private val db: SupportSQLiteDatabase) : SupportSQLiteDatabase {
         return db.query(query)
     }
 
-    override fun query(query: String, bindArgs: Array<Any>): Cursor {
+    override fun query(query: String, bindArgs: Array<out Any?>): Cursor {
         log(query)
         return db.query(query, bindArgs)
     }
@@ -100,41 +99,24 @@ class DbProxy(private val db: SupportSQLiteDatabase) : SupportSQLiteDatabase {
         return db.query(query)
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
-    override fun query(query: SupportSQLiteQuery, cancellationSignal: CancellationSignal): Cursor {
-        return db.query(query, cancellationSignal)
-    }
+    override fun query(query: SupportSQLiteQuery, cancellationSignal: CancellationSignal?) =
+        db.query(query, cancellationSignal)
 
     @Throws(SQLException::class)
     override fun insert(table: String, conflictAlgorithm: Int, values: ContentValues): Long {
         return db.insert(table, conflictAlgorithm, values)
     }
 
-    fun insert(table: String?, values: ContentValues?): Long {
+    fun insert(table: String, values: ContentValues): Long {
         return db.insert(table, SQLiteDatabase.CONFLICT_NONE, values)
     }
 
     fun delete(table: String) = db.delete(table, null, null)
     fun delete(table: String, whereClause: String?) = db.delete(table, whereClause, null)
 
-    override fun delete(table: String, whereClause: String?, whereArgs: Array<Any>?): Int {
-        log("delete from $table where $whereClause ${whereArgs?.joinToString()}")
-        return db.delete(table, whereClause, whereArgs)
-    }
-
-    override fun update(
-        table: String,
-        conflictAlgorithm: Int,
-        values: ContentValues,
-        whereClause: String,
-        whereArgs: Array<Any>
-    ): Int {
-        return db.update(table, conflictAlgorithm, values, whereClause, whereArgs)
-    }
-
     fun update(
-        table: String?,
-        values: ContentValues?,
+        table: String,
+        values: ContentValues,
         whereClause: String?,
         whereArgs: Array<String?>?
     ): Int {
@@ -142,35 +124,21 @@ class DbProxy(private val db: SupportSQLiteDatabase) : SupportSQLiteDatabase {
     }
 
     @Throws(SQLException::class)
-    override fun execSQL(query: String) {
-        log(query)
-        db.execSQL(query)
+    override fun execSQL(sql: String) {
+        log(sql)
+        db.execSQL(sql)
     }
 
-    @Throws(SQLException::class)
-    override fun execSQL(query: String, bindArgs: Array<Any?>) {
-        log("$query args: $bindArgs")
-        db.execSQL(query, bindArgs)
+    override fun execSQL(sql: String, bindArgs: Array<out Any?>) {
+        db.execSQL(sql, bindArgs)
     }
 
     private fun log(query: String) {
         queryLogger?.onQuery(query)
     }
 
-    override fun isReadOnly(): Boolean {
-        return db.isReadOnly
-    }
-
-    override fun isOpen(): Boolean {
-        return db.isOpen
-    }
-
     override fun needUpgrade(newVersion: Int): Boolean {
         return db.needUpgrade(newVersion)
-    }
-
-    override fun getPath(): String {
-        return db.path
     }
 
     override fun setLocale(locale: Locale) {
@@ -182,8 +150,8 @@ class DbProxy(private val db: SupportSQLiteDatabase) : SupportSQLiteDatabase {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
-    override fun setForeignKeyConstraintsEnabled(enable: Boolean) {
-        db.setForeignKeyConstraintsEnabled(enable)
+    override fun setForeignKeyConstraintsEnabled(enabled: Boolean) {
+        db.setForeignKeyConstraintsEnabled(enabled)
     }
 
     override fun enableWriteAheadLogging(): Boolean {
@@ -195,27 +163,14 @@ class DbProxy(private val db: SupportSQLiteDatabase) : SupportSQLiteDatabase {
         db.disableWriteAheadLogging()
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
-    override fun isWriteAheadLoggingEnabled(): Boolean {
-        return db.isWriteAheadLoggingEnabled
-    }
-
-    override fun getAttachedDbs(): List<Pair<String, String>> {
-        return db.attachedDbs
-    }
-
-    override fun isDatabaseIntegrityOk(): Boolean {
-        return db.isDatabaseIntegrityOk
-    }
-
     @Throws(IOException::class)
     override fun close() {
         db.close()
     }
 
     fun insertWithOnConflict(
-        tableName: String?,
-        values: ContentValues?,
+        tableName: String,
+        values: ContentValues,
         conflictIgnore: Int
     ) {
         db.insert(tableName, conflictIgnore, values)
@@ -223,7 +178,11 @@ class DbProxy(private val db: SupportSQLiteDatabase) : SupportSQLiteDatabase {
 
     fun rawQuery(sql: String, selectionArgs: Array<Any?>? = null): Cursor {
         log(sql)
-        return db.query(sql, selectionArgs)
+        return if (selectionArgs != null) {
+            db.query(sql, selectionArgs)
+        } else {
+            db.query(sql)
+        }
     }
 
     fun interface QueryLogger {
