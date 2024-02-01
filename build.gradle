@@ -1,16 +1,19 @@
-apply plugin: 'com.android.library'
-apply plugin: 'kotlin-android'
+plugins {
+    id 'com.android.library'
+    id 'org.jetbrains.kotlin.android'
+}
+
 
 repositories {
     maven { url 'https://jitpack.io' }
 }
 
 android {
-    compileSdk 33
+    compileSdk 34
 
     defaultConfig {
         minSdkVersion 19
-        targetSdkVersion 33
+        targetSdkVersion 34
     }
     buildTypes {
         release {
@@ -30,9 +33,9 @@ dependencies {
 
     implementation 'com.github.requery:sqlite-android:3.36.0'
     implementation 'org.jetbrains:annotations:24.0.1'
-    implementation 'androidx.sqlite:sqlite-ktx:2.3.1'
+    implementation 'androidx.sqlite:sqlite-ktx:2.4.0'
 
-    implementation platform('com.google.firebase:firebase-bom:32.1.1')
+    implementation platform('com.google.firebase:firebase-bom:32.7.1')
     implementation 'com.google.firebase:firebase-crashlytics'
     implementation 'com.google.firebase:firebase-analytics'
 
