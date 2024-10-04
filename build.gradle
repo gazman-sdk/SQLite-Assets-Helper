@@ -12,7 +12,7 @@ android {
     compileSdk 35
 
     defaultConfig {
-        minSdkVersion 21
+        minSdkVersion 23
         targetSdkVersion 35
     }
     buildTypes {
@@ -22,8 +22,8 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility 17
-        targetCompatibility 17
+        sourceCompatibility 21
+        targetCompatibility 21
     }
     namespace 'com.gazman.db'
 }
