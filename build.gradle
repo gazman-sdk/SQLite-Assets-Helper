@@ -6,11 +6,11 @@ repositories {
 }
 
 android {
-    compileSdk 33
+    compileSdk 35
 
     defaultConfig {
-        minSdkVersion 19
-        targetSdkVersion 33
+        minSdkVersion 21
+        targetSdkVersion 35
     }
     buildTypes {
         release {
@@ -30,9 +30,9 @@ dependencies {
 
     implementation 'com.github.requery:sqlite-android:3.36.0'
     implementation 'org.jetbrains:annotations:24.0.1'
-    implementation 'androidx.sqlite:sqlite-ktx:2.3.1'
+    implementation 'androidx.sqlite:sqlite-ktx:2.4.0'
 
-    implementation platform('com.google.firebase:firebase-bom:32.1.1')
+    implementation platform('com.google.firebase:firebase-bom:33.4.0')
     implementation 'com.google.firebase:firebase-crashlytics'
     implementation 'com.google.firebase:firebase-analytics'
 
